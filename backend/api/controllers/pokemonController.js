@@ -23,11 +23,13 @@ const getPokemon = asyncHandler(async (req, res, next) => {
 const getSinglePokemon = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
-  const isIdNotName = Number(id);
+  const searchProp = Number(id) ? "pokedexId" : "name";
+  const searchValue = Number(id) || /id/i;
+  const filter = { [searchProp]: searchValue };
 
-  res
-    .status(200)
-    .send(`Requested pokemon: ${isIdNotName ? "ID" : "Name"} ${id}`);
+  const result = (await Pokemon.findOne(filter)) ?? {};
+
+  res.status(200).json(result);
 });
 
 const getSinglePokemonInfo = asyncHandler(async (req, res, next) => {

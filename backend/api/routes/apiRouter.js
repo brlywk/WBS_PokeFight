@@ -11,6 +11,6 @@ apiRouter.use("/pokemon", pokemonRouter);
 apiRouter.use("/fights", fightsRouter);
 
 // TMP ROUTE initial_load
-apiRouter.use("/initial_load", initialLoad);
+// apiRouter.use("/initial_load", initialLoad);
 
 export default apiRouter;

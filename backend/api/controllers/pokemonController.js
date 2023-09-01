@@ -1,8 +1,10 @@
-export function getAllPokemon(req, res, next) {
-  res.status(200).send("Get all Pokemon route working");
-}
+import asyncHandler from "express-async-handler";
 
-export function getSinglePokemon(req, res, next) {
+const getAllPokemon = asyncHandler(async (req, res, next) => {
+  res.status(200).send("Get all Pokemon route working");
+});
+
+const getSinglePokemon = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const isIdNotName = Number(id);
@@ -10,9 +12,9 @@ export function getSinglePokemon(req, res, next) {
   res
     .status(200)
     .send(`Requested pokemon: ${isIdNotName ? "ID" : "Name"} ${id}`);
-}
+});
 
-export function getSinglePokemonInfo(req, res, next) {
+const getSinglePokemonInfo = asyncHandler(async (req, res, next) => {
   const { id, prop } = req.params;
 
   const isIdNotName = Number(id);
@@ -24,4 +26,6 @@ export function getSinglePokemonInfo(req, res, next) {
         isIdNotName ? "ID" : "Name"
       } ${id}, requesting prop ${prop}`
     );
-}
+});
+
+export { getAllPokemon, getSinglePokemon, getSinglePokemonInfo };

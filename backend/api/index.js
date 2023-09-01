@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import db from "./data/mongoDbConnection.js";
 import errorHandler from "./middleware/errorHandling.js";
 import apiRouter from "./routes/apiRouter.js";
 
@@ -16,4 +17,14 @@ app.use("/api", apiRouter);
 app.use(errorHandler);
 
 const port = process.env.PORT;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+
+db.once("open", () => {
+  app.listen(port, () => {
+    console.log(`Server running, listening to port ${3000}`);
+  });
+});
+
+db.once("error", (error) => {
+  console.log(`Unable to establish database connection: ${error}\nExiting.`);
+  process.exit(1);
+});

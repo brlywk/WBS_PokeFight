@@ -1,8 +1,10 @@
-export function getLeaderboard(req, res, next) {
-  res.status(200).send("Leaderboard requested");
-}
+import asyncHandler from "express-async-handler";
 
-export function postNewFight(req, res, next) {
+const getLeaderboard = asyncHandler(async (req, res, next) => {
+  res.status(200).send("Leaderboard requested");
+});
+
+const postNewFight = asyncHandler(async (req, res, next) => {
   const { body } = req;
 
   if (!body || Object.keys(body).length === 0) {
@@ -10,4 +12,6 @@ export function postNewFight(req, res, next) {
   }
 
   res.status(200).send(`Fight data received: ${JSON.stringify(body)}`);
-}
+});
+
+export { getLeaderboard, postNewFight };

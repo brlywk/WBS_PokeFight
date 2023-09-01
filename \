@@ -1,41 +1,16 @@
 import { Router } from "express";
-import data from "../data/master_pokedex.json" assert { type: "json" };
-import Pokemon from "../data/pokemonSchema.js";
-import asyncHandler from "express-async-handler";
+import {
+  getAllPokemon,
+  getSinglePokemon,
+  getSinglePokemonInfo,
+  searchPokemon,
+} from "../controllers/pokemonController.js";
 
-const initialLoad = Router();
+const pokemonRouter = Router();
 
-initialLoad.route("/").get(
-  asyncHandler(async (req, res, next) => {
-    data.forEach(async (p) => {
-      const pokeAPI = "https://pokeapi.co/api/v2/pokemon/";
-      const pokeUrl = new URL(p.name.english.toLowerCase(), pokeAPI);
-      const pokeResult = await fetch(pokeUrl.href);
-      const pokeData = await pokeResult.json();
-      const sprites = {
-        artwork: pokeData.sprites.other["official-artwork"].front_default,
-        front: pokeData.sprites.front_default,
-        back: pokeData.sprites.back_default,
-      };
+pokemonRouter.route("/").get(getAllPokemon);
+pokemonRouter.route("/search").get(searchPokemon);
+pokemonRouter.route("/:id").get(getSinglePokemon);
+pokemonRouter.route("/:id/:prop").get(getSinglePokemonInfo);
 
-      res.send(sprites);
-
-      const dbResult = await Pokemon.findOneAndUpdate(
-        { pokedexId: p.pokedexId },
-        {
-          name: p.name.english,
-          type: p.type,
-          "stats.hp": p.base["HP"],
-          "stats.attack": p.base["Attack"],
-          "stats.defense": p.base["Defense"],
-          "stats.special_attack": p.base["Sp. Attack"],
-          "stats.special_defense": p.base["Sp. Defense"],
-          "stats.speed": p.base["Speed"],
-        },
-        { upsert: true }
-      );
-    });
-  })
-);
-
-export default initialLoad;
+export default pokemonRouter;

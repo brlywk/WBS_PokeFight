@@ -1,7 +1,23 @@
 import asyncHandler from "express-async-handler";
+import Pokemon from "../schema/pokemonSchema.js";
 
-const getAllPokemon = asyncHandler(async (req, res, next) => {
-  res.status(200).send("Get all Pokemon route working");
+const getPokemon = asyncHandler(async (req, res, next) => {
+  const { query } = req.query;
+
+  if (query) {
+    const results = await Pokemon.aggregate().search({
+      index: "pokemon",
+      text: {
+        query,
+        path: ["name", "type"],
+      },
+    });
+    res.status(200).json(results);
+  } else {
+    const results = await Pokemon.find({}, { pokedexId: 1, name: 1, _id: 0 });
+
+    res.status(200).json(results);
+  }
 });
 
 const getSinglePokemon = asyncHandler(async (req, res, next) => {
@@ -28,4 +44,4 @@ const getSinglePokemonInfo = asyncHandler(async (req, res, next) => {
     );
 });
 
-export { getAllPokemon, getSinglePokemon, getSinglePokemonInfo };
+export { getPokemon, getSinglePokemon, getSinglePokemonInfo };

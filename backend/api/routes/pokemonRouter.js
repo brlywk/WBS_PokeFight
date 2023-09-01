@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
-  getAllPokemon,
+  getPokemon,
   getSinglePokemon,
   getSinglePokemonInfo,
 } from "../controllers/pokemonController.js";
 
 const pokemonRouter = Router();
 
-pokemonRouter.route("/").get(getAllPokemon);
+pokemonRouter.route("/").get(getPokemon);
 pokemonRouter.route("/:id").get(getSinglePokemon);
 pokemonRouter.route("/:id/:prop").get(getSinglePokemonInfo);
 

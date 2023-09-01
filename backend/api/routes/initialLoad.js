@@ -1,6 +1,6 @@
 import { Router } from "express";
-import data from "../data/master_pokedex.json" assert { type: "json" };
-import Pokemon from "../data/pokemonSchema.js";
+import data from "../json/master_pokedex.json" assert { type: "json" };
+import Pokemon from "../schema/pokemonSchema.js";
 import asyncHandler from "express-async-handler";
 
 const initialLoad = Router();

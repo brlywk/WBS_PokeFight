@@ -35,15 +35,23 @@ const getSinglePokemon = asyncHandler(async (req, res, next) => {
 const getSinglePokemonInfo = asyncHandler(async (req, res, next) => {
   const { id, prop } = req.params;
 
-  const isIdNotName = Number(id);
+  const searchProp = Number(id) ? "pokedexId" : "name";
+  const searchValue = Number(id) || /id/i;
 
-  res
-    .status(200)
-    .send(
-      `Requested pokemon: ${
-        isIdNotName ? "ID" : "Name"
-      } ${id}, requesting prop ${prop}`
-    );
+  const filter = { [searchProp]: searchValue };
+  const projection = { [prop]: 1 };
+
+  const result = await Pokemon.findOne(filter, projection);
+  let retObj = result.toObject();
+
+  // if the prop we are looking for does not exist, this endpoint
+  // should not return anything... but mongoDB always returns an Object
+  // with a single property if the document exists (property _id)
+  if (Object.keys(retObj).length === 1) {
+    retObj = {};
+  }
+
+  res.status(200).json(retObj);
 });
 
 export { getPokemon, getSinglePokemon, getSinglePokemonInfo };

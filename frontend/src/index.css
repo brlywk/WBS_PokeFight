@@ -1,34 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant:wght@700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer utilities {
-    .homepage-bg {
-      @apply bg-no-repeat bg-center bg-cover;
-      background-image: url('../src/assets/homepagebg.svg');
-    }
-}
+  .homepage-bg {
+    @apply bg-no-repeat bg-center bg-cover;
+    background-image: url("../src/assets/homepagebg.svg");
+  }
 
-@layer utilities {
-    .poke-arena-bg {
-      @apply bg-no-repeat bg-center bg-cover;
-      background-image: url('../src/assets/poke_arena_fightbg.svg');
-    }
-}
+  .poke-arena-bg {
+    @apply bg-no-repeat bg-center bg-cover;
+    background-image: url("../src/assets/poke_arena_fightbg.svg");
+  }
 
-@layer utilities {
-    .poke-opp-select {
-        @apply bg-no-repeat bg-center bg-cover;
-        background-image: url('../src/assets/pokemon_opponent_selection_pagebg.svg');
-    }
-}
+  .poke-opp-select {
+    @apply bg-no-repeat bg-center bg-cover;
+    background-image: url("../src/assets/pokemon_opponent_selection_pagebg.svg");
+  }
 
-@layer utilities {
-    .poke-select {
-        @apply bg-no-repeat bg-center bg-cover;
-        background-image: url('../src/assets/pokemon_selection_pagebg.svg');
-    }
+  .poke-select {
+    @apply bg-no-repeat bg-center bg-cover;
+    background-image: url("../src/assets/pokemon_selection_pagebg.svg");
+  }
 }

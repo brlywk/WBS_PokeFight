@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import homePageBg from "../assets/homepagebg.svg";
 import logo from "../assets/PokeFight.webp"; // Import your logo
 
 function HomePage() {
-  const [trainerName, setTrainerName] = useState('');
+  const [trainerName, setTrainerName] = useState("");
 
   const handleInputChange = (event) => {
     setTrainerName(event.target.value);
@@ -15,33 +15,25 @@ function HomePage() {
   };
 
   return (
-    <div style={{ 
-      backgroundImage: `url(${homePageBg})`,
-      height: '100vh', 
-      width: '100%', 
-      backgroundSize: 'cover', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-    }}>
-      <img src={logo} alt="PokeFight Logo" style={{ position: 'absolute', top: '2cm' }} />
-      <input 
-        type="text" 
-        value={trainerName} 
-        onChange={handleInputChange} 
+    <div className="w-full h-full homepage-bg flex flex-col items-center justify-center ">
+      <img src="/PokeFight.webp" alt="PokeFight Logo" />
+      <input
+        type="text"
+        value={trainerName}
+        onChange={handleInputChange}
         placeholder="Enter trainer name"
       />
-      <button 
-        onClick={handleEnterClick} 
-        style={{ 
-          fontFamily: '"Press Start 2P", cursive', 
-          fontSize: '50px', 
-          color: 'yellow', 
-          textShadow: '3px 3px 0px black', 
-          fontWeight: 'bold', 
-          marginTop: '20px' 
-        }}
+      <button
+        onClick={handleEnterClick}
+        className="font-['Press_Start_2P'] text-4xl"
+        // style={{
+        //   fontFamily: '"Press Start 2P", cursive',
+        //   fontSize: "50px",
+        //   color: "yellow",
+        //   textShadow: "3px 3px 0px black",
+        //   fontWeight: "bold",
+        //   marginTop: "20px",
+        // }}
       >
         Enter
       </button>

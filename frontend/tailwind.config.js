@@ -9,3 +9,16 @@ export default {
   },
   plugins: [],
 }
+
+module.exports = {
+  theme: {
+    extend: {
+      fontFamily: {
+        'press-start': ['"Press Start 2P"', 'cursive'],
+        'title': ['Cormorant', 'serif']
+      }
+    }
+  },
+  variants: {},
+  plugins: [],
+}

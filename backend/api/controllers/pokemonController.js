@@ -1,7 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Pokemon from "../schema/pokemonSchema.js";
 
-// returns all pokemon or a search result if query is specified
+/**
+ * @desc    Returns all pokemon or a search result if query is specified
+ */
 const getPokemon = asyncHandler(async (req, res, next) => {
   const { query } = req.query;
 
@@ -28,6 +30,9 @@ const getPokemon = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+/**
+ * @desc    Returns a single pokemon by its ID or name
+ */
 const getSinglePokemon = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
@@ -46,6 +51,9 @@ const getSinglePokemon = asyncHandler(async (req, res, next) => {
   res.status(200).json(result);
 });
 
+/**
+ * @desc    Returns info on a single property of a single pokemon
+ */
 const getSinglePokemonInfo = asyncHandler(async (req, res, next) => {
   const { id, prop } = req.params;
 

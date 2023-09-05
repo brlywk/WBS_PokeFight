@@ -13,10 +13,11 @@ const roundSchema = new Schema({
 
 const fightSchema = new Schema(
   {
+    winner: { type: Number, required: true },
     player_one_name: { type: String, required: true },
     player_two_name: { type: String, default: "CPU" },
-    player_one_pokemon: { type: String, required: true },
-    player_two_pokemon: { type: String, required: true },
+    player_one_pokemon_id: { type: Number, required: true },
+    player_two_pokemon_id: { type: Number, required: true },
     rounds: { type: [roundSchema], required: true },
   },
   { timestamps: true }

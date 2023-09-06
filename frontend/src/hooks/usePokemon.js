@@ -4,7 +4,7 @@ import { pokemonEndpoint } from "../utils/apiEndpoints";
 export const useAllPokemon = () => {
   const { data, isLoading, error, errorMessage, refetch } = useFetch("");
 
-  const fetch = () => {
+  const fetchAll = () => {
     refetch(pokemonEndpoint);
   };
 
@@ -13,7 +13,7 @@ export const useAllPokemon = () => {
     allPokemonLoading: isLoading,
     allPokemonError: error,
     allPokemonErrorMessage: errorMessage,
-    fetch,
+    fetchAll,
   };
 };
 
@@ -38,7 +38,7 @@ export const useSearchPokemon = () => {
 export const useOnePokemon = () => {
   const { data, isLoading, error, errorMessage, refetch } = useFetch("");
 
-  const fetch = (idOrName) => {
+  const fetchOne = (idOrName) => {
     const url = `${pokemonEndpoint}/${idOrName}`;
     refetch(url);
   };
@@ -48,14 +48,14 @@ export const useOnePokemon = () => {
     onePokemonLoading: isLoading,
     onePokemonError: error,
     onePokemonErrorMessage: errorMessage,
-    fetch,
+    fetchOne,
   };
 };
 
 export const useOnePokemonInfo = () => {
   const { data, isLoading, error, errorMessage, refetch } = useFetch("");
 
-  const fetch = (idOrName, info) => {
+  const fetchInfo = (idOrName, info) => {
     const url = `${pokemonEndpoint}/${idOrName}/${info}`;
     refetch(url);
   };
@@ -65,6 +65,6 @@ export const useOnePokemonInfo = () => {
     onePokemonInfoLoading: isLoading,
     onePokemonInfoError: error,
     onePokemonInfoErrorMessage: errorMessage,
-    fetch,
+    fetchInfo,
   };
 };

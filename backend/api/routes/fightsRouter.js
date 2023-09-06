@@ -4,6 +4,7 @@ import {
   getAllFights,
   postNewFight,
 } from "../controllers/fightsController.js";
+
 const fightsRouter = Router();
 
 fightsRouter.route("/").get(getAllFights);

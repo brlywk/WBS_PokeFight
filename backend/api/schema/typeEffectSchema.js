@@ -8,4 +8,4 @@ const typeEffectSchema = new Schema({
   super_effective: { type: [String], require: true },
 });
 
-export default mongoose.model("TypeEffect", pokemonSchema);
+export default mongoose.model("type_effect", typeEffectSchema);

@@ -37,7 +37,7 @@ const getSinglePokemon = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const searchProp = Number(id) ? "pokedexId" : "name";
-  const searchValue = Number(id) || /id/i;
+  const searchValue = Number(id) || new RegExp(id, "i");
   const filter = { [searchProp]: searchValue };
 
   const result = (await Pokemon.findOne(filter)) ?? {};

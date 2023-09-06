@@ -1,7 +1,7 @@
 import { Router } from "express";
 import pokemonRouter from "./pokemonRouter.js";
 import fightsRouter from "./fightsRouter.js";
-import initialLoad from "./initialLoad.js";
+// import initialLoad from "./initialLoad.js";
 const apiRouter = Router();
 
 // ROUTE pokemon

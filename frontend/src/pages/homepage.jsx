@@ -17,7 +17,7 @@ function HomePage() {
   };
 
   return (
-    <div className="w-full h-full homepage-bg flex flex-col items-center justify-center ">
+    <div className="homepage-bg flex h-full w-full flex-col items-center justify-center ">
       <img src="/PokeFight.webp" alt="PokeFight Logo" />
       <input
         type="text"

@@ -1,17 +1,19 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import homePageBg from "../assets/homepagebg.svg";
 import logo from "../assets/PokeFight.webp"; // Import your logo
 
 function HomePage() {
   const [trainerName, setTrainerName] = useState("");
+  const navigate = useNavigate(); // Add this line
 
   const handleInputChange = (event) => {
     setTrainerName(event.target.value);
   };
 
   const handleEnterClick = () => {
-    // Handle the enter button click event
-    // You might want to navigate to the next page here
+    // Navigate to the PokeArenaPage when the "Enter" button is clicked
+    navigate('/pokemon-selection');
   };
 
   return (
@@ -25,15 +27,7 @@ function HomePage() {
       />
       <button
         onClick={handleEnterClick}
-        className="font-['Press_Start_2P'] text-4xl"
-        // style={{
-        //   fontFamily: '"Press Start 2P", cursive',
-        //   fontSize: "50px",
-        //   color: "yellow",
-        //   textShadow: "3px 3px 0px black",
-        //   fontWeight: "bold",
-        //   marginTop: "20px",
-        // }}
+        className="font-['Press_Start_2P'] text-4xl text-yellow-500 font-bold mt-5 text-shadow"
       >
         Enter
       </button>

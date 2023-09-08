@@ -1,19 +1,28 @@
+// App.js
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Homepage from './pages/homepage';
-import PokeSelectPage from './pages/poke_select_page';
+import HomePage from './pages/homepage';
+import PokemonSelectionPage from './pages/poke_select_page';
 import PokeOppSelectPage from './pages/poke_opp_select_page';
-import { ArenaPage, ResultPage } from './pages/result_page';
+import PokeArenaPage from './pages/poke_arena_page';
+import { SelectedPokemonContext, SelectedOpponentPokemonContext } from './contexts/PokemonContexts';
 
 function App() {
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedOpponentPokemon, setSelectedOpponentPokemon] = useState(null);
+
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/pokemon-selection" element={<PokeSelectPage />} />
-        <Route path="/opponent-selection" element={<PokeOppSelectPage />} />
-        <Route path="/arena" element={<ArenaPage />} />
-        <Route path="/result" element={<ResultPage />} /> {/* Use element instead of component */}
-      </Routes>
+      <SelectedPokemonContext.Provider value={{ selectedPokemon, setSelectedPokemon }}>
+        <SelectedOpponentPokemonContext.Provider value={{ selectedOpponentPokemon, setSelectedOpponentPokemon }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/pokemon-selection" element={<PokemonSelectionPage />} />
+            <Route path="/opponent-selection" element={<PokeOppSelectPage />} />
+            <Route path="/arena" element={<PokeArenaPage />} />
+          </Routes>
+        </SelectedOpponentPokemonContext.Provider>
+      </SelectedPokemonContext.Provider>
     </Router>
   );
 }

@@ -2,7 +2,7 @@ import useFetch from "./useFetch";
 import { pokemonEndpoint } from "../utils/apiEndpoints";
 
 export const useAllPokemon = () => {
-  const { data, isLoading, error, errorMessage, refetch } = useFetch("");
+  const { data, isLoading, error, errorMessage, refetch } = useFetch(pokemonEndpoint);
 
   const fetchAll = () => {
     refetch(pokemonEndpoint);
@@ -35,8 +35,11 @@ export const useSearchPokemon = () => {
   };
 };
 
-export const useOnePokemon = () => {
-  const { data, isLoading, error, errorMessage, refetch } = useFetch("");
+export const useOnePokemon = (idOrName) => {
+  const { data, isLoading, error, errorMessage, refetch } = useFetch(`${pokemonEndpoint}/${idOrName}`);
+
+  console.log('Fetched Pokemon Data:', data); // Log the fetched data
+  console.log('Fetch Error:', error); // Log any potential errors
 
   const fetchOne = (idOrName) => {
     const url = `${pokemonEndpoint}/${idOrName}`;
@@ -68,3 +71,5 @@ export const useOnePokemonInfo = () => {
     fetchInfo,
   };
 };
+
+

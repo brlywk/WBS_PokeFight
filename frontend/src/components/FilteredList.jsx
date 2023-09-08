@@ -67,15 +67,20 @@ const FilteredList = ({ handleSelection }) => {
 
   return (
     <>
-      <input
-        type="text"
-        onChange={handleSearchInput}
-        placeholder="Search Pokemon"
-        ref={searchRef}
-      />
-      <button onClick={clearFilter}>Show all</button>
-      <button onClick={newRandomList}>Some random pokemont</button>
-      <button onClick={makeSuggestion}>Pick one for me</button>
+      <div className="flex justify-center space-x-4">
+        <input
+          type="text"
+          onChange={handleSearchInput}
+          placeholder="Search Pokemon"
+          ref={searchRef}
+          className="rounded-full p-2"
+        />
+      </div>
+      <div className="flex justify-end space-x-4">
+        <button onClick={clearFilter} className="rounded-md">Show all</button>
+        <button onClick={newRandomList} className="rounded-md">Some random pokemont</button>
+        <button onClick={makeSuggestion} className="rounded-md">Pick one for me</button>
+      </div>
       {allPokemonLoading && "Loading..."}
       <div className="grid grid-cols-5 gap-4">
         {!allPokemonLoading &&

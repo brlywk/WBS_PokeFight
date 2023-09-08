@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import homePageBg from "../assets/homepagebg.svg";
-import logo from "../assets/PokeFight.webp"; // Import your logo
+
+// Define the Pokemon sprite URLs
+const pokemonSprites = {
+  artwork: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+  back: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/25.png",
+  front: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+};
 
 function HomePage() {
   const [trainerName, setTrainerName] = useState("");
@@ -19,6 +24,7 @@ function HomePage() {
   return (
     <div className="homepage-bg flex h-full w-full flex-col items-center justify-center ">
       <img src="/PokeFight.webp" alt="PokeFight Logo" />
+      <img src={pokemonSprites.front} alt="Pokemon Sprite" className="w-48 h-48 animate-bounce" />
       <input
         type="text"
         value={trainerName}

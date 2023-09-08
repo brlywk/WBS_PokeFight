@@ -33,3 +33,14 @@
 .playerPokemon {
   @apply animate-drop;
 }
+
+.special-attack-animation {
+  animation: play both steps(var(--frames)) var(--runs);
+  animation-timeline: scroll();
+}
+
+@keyframes play {
+  to {
+    object-position: 100% 0;
+  }
+}

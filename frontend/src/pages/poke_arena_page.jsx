@@ -108,6 +108,8 @@ export default function PokeArenaPage() {
     // });
   };
 
+
+  
   // Define the Button component within the same file
   const Button = ({ label, onClick }) => (
     <button onClick={onClick} className="action-button bg-white bg-opacity-30 border-2 border-black rounded-2xl p-2">

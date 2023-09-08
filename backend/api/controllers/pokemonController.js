@@ -18,7 +18,7 @@ const getPokemon = asyncHandler(async (req, res, next) => {
       },
     });
   } else {
-    result = await Pokemon.find({}, { pokedexId: 1, name: 1, _id: 0 });
+    result = await Pokemon.find({});
   }
 
   if (!result) {

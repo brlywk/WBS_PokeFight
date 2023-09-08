@@ -1,9 +1,9 @@
 const host = import.meta.env.VITE_API_HOST;
 const port = import.meta.env.VITE_API_PORT || "";
-const basePath = import.meta.env.VITE_API_BASE_PATH;
-const pokePath = import.meta.env.VITE_API_POKEMON_PATH;
-const fightPath = import.meta.env.VITE_API_FIGHT_PATH;
-const typePath = import.meta.env.VITE_API_TYPE_PATH;
+const basePath = import.meta.env.VITE_API_BASE;
+const pokePath = import.meta.env.VITE_API_POKEMON;
+const fightPath = import.meta.env.VITE_API_FIGHT;
+const typePath = import.meta.env.VITE_API_TYPE;
 
 const apiEndpoint = `${host}${port ? ":" : ""}${port}/${basePath}`;
 

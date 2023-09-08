@@ -29,3 +29,7 @@
     text-shadow: -1px 0 black, 0 1px black, 5px 0 black, 0 -1px black;
   }
 }
+
+.playerPokemon {
+  @apply animate-drop;
+}

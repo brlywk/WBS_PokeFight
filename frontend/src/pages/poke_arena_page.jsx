@@ -15,6 +15,7 @@ export default function PokeArenaPage() {
   //   loading: opponentLoading,
   //   error: opponentError,
   // } = useOnePokemon();
+  
   const playerPokemon = {
     stats: {
       attack: 55,
@@ -64,6 +65,7 @@ export default function PokeArenaPage() {
 
   const [trainerName, setTrainerName] = useState(""); // State to store the trainer's name
   const [currentRound, setCurrentRound] = useState(1); // State to store the current round
+  const [showResult, setShowResult] = useState(false); // State to control the display of the result page
 
   // useEffect(() => {
   //   // Fetch player's selected Pokemon
@@ -113,6 +115,12 @@ export default function PokeArenaPage() {
     </button>
   );
 
+  // Only render the game over screen if showResult is true
+  if (showResult) {
+    return <ResultPage />;
+  }
+
+  // If showResult is false, render the game interface
   return (
     <>
       <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center relative">
@@ -148,4 +156,4 @@ export default function PokeArenaPage() {
       </div>
     </>
   );
-        }
+}

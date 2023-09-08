@@ -22,5 +22,15 @@ export const useSingleFight = () => {
 };
 
 export const useSaveFight = () => {
-  // TODO implement
+  const { post } = useFetch();
+
+  const saveFight = async (fightData) => {
+    try {
+      await post(fightEndpoint + '/save', fightData);
+    } catch (error) {
+      console.error('Failed to save fight:', error);
+    }
+  };
+
+  return { saveFight };
 };

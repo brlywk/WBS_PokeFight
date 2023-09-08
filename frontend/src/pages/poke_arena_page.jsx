@@ -1,54 +1,79 @@
-// poke_arena_page.jsx
-import { useState, useEffect } from 'react';
-import usePokemonData from '../hooks/usePokemonData'; // Import the custom hook
+import React, { useState, useEffect } from 'react';
+import { useOnePokemon } from '../hooks/usePokemon'; // Import the custom hook
+import { useAllFights, useSaveFight } from '../hooks/useFights'; // Import the custom hooks for fights
+import PokeArena from '../assets/poke_arena_fightbg.svg'; // Import the background image
 
 export default function PokeArenaPage() {
   // Use the custom hook to fetch the player's and opponent's Pokemon
-  const [playerPokemon, playerLoading, playerError] = usePokemonData('/api/playerPokemon');( /* your player's selected Pokemon */ );
-  const [opponentPokemon, opponentLoading, opponentError] = usePokemonData('/api/opponentPokemon');( /* opponent's selected Pokemon */ );
+  const { pokemon: playerPokemon, loading: playerLoading, error: playerError } = useOnePokemon('playerPokemon');
+  const { pokemon: opponentPokemon, loading: opponentLoading, error: opponentError } = useOnePokemon('opponentPokemon');
+  const { allFights, allFightsLoading, allFightsError } = useAllFights();
+  const { saveFight } = useSaveFight(); // Use the custom hook to save the fight
 
-  function PokemonComponent() {
-    const { data, isLoading, error } = usePokemonData();
-  
-    if (isLoading) return 'Loading...';
-    if (error) return 'An error occurred';
+  const [trainerName, setTrainerName] = useState(''); // State to store the trainer's name
+  const [currentRound, setCurrentRound] = useState(1); // State to store the current round
 
-  // Placeholder sprites and names until the selection pages are ready
-  const placeholderPlayer = {
-    sprites: {
-      front: 'path/to/player/sprite'
-    },
-    name: 'Player Placeholder'
+  useEffect(() => {
+    // Fetch player's selected Pokemon
+    // Fetch opponent's selected Pokemon
+    allFights.fetch(); // Fetch all fights
+  }, []);
+
+  if (playerLoading || opponentLoading || allFightsLoading) return 'Loading...';
+  if (playerError || opponentError || allFightsError) return 'An error occurred';
+
+  const handleAttackClick = () => {
+    // Calculate the damage
+    const damage = playerPokemon.attack - opponentPokemon.defense;
+    
+    // Update the opponent's HP
+    setOpponentPokemon(prevState => ({
+      ...prevState,
+      hp: prevState.hp - damage,
+    }));
+
+    // Save the fight data
+    saveFight({
+      player_one_name: trainerName,
+      player_two_name: 'CPU',
+      player_one_pokemon_id: playerPokemon.id,
+      player_two_pokemon_id: opponentPokemon.id,
+      rounds: [
+        // Add the round data
+        {
+          round: currentRound,
+          player_one_action: 'Attack',
+          player_one_damage_taken: 0,
+          player_two_action: 'Defense',
+          player_two_damage_taken: damage,
+          player_one_hp_left: playerPokemon.hp,
+          player_two_hp_left: opponentPokemon.hp - damage,
+        },
+      ],
+    });
   };
 
-  const placeholderOpponent = {
-    sprites: {
-      front: 'path/to/opponent/sprite'
-    },
-    name: 'Opponent Placeholder'
-  };
-
-  // Uncomment the following lines once the selection pages are ready
-  // useEffect(() => {
-  //   setPlayerPokemon( /* chosen player from poke_select_page.jsx */ );
-  //   setOpponentPokemon( /* chosen opponent from poke_opp_select_page.jsx */ );
-  // }, []);
+  // Define the Button component within the same file
+  const Button = ({ label, onClick }) => (
+    <button onClick={onClick} className="action-button">
+      {label}
+    </button>
+  );
 
   return (
-    <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center ">
-      <div className="arena w-full h-[400px]">
-        <img src={playerPokemon ? playerPokemon.sprites.front : placeholderPlayer.sprites.front} alt={playerPokemon ? playerPokemon.name : placeholderPlayer.name} />
-        <img src={opponentPokemon ? opponentPokemon.sprites.front : placeholderOpponent.sprites.front} alt={opponentPokemon ? opponentPokemon.name : placeholderOpponent.name} />
+    <>
+      <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center ">      
+        <img src={PokeArena} alt="PokeArenaFight" />
+        {playerPokemon && <img src={playerPokemon.sprites.front} alt={playerPokemon.name} />}
+        {opponentPokemon && <img src={opponentPokemon.sprites.front} alt={opponentPokemon.name} />}
       </div>
       <div className="actions flex">
-        <ActionButton label="Attack" />
-        <ActionButton label="Special Attack" />
-        <ActionButton label="Defense" />
-        <ActionButton label="Special Defense" />
-        <ActionButton label="Special Action Points" />
+        <Button label="Attack" onClick={handleAttackClick} />
+        <Button label="Special Attack" />
+        <Button label="Defense" />
+        <Button label="Special Defense" />
+        <Button label="Special Action Points" />
       </div>
-    </div>
+    </>
   );
 }
-}
-

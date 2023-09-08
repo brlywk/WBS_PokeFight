@@ -110,12 +110,13 @@ export default function PokeArenaPage() {
 
 
   
-  // Define the Button component within the same file
-  const Button = ({ label, onClick }) => (
-    <button onClick={onClick} className="action-button bg-white bg-opacity-30 border-2 border-black rounded-2xl p-2">
-      {label}
-    </button>
-  );
+// Define the Button component within the same file
+const Button = ({ label, onClick, children }) => (
+  <button onClick={onClick} className="action-button bg-white bg-opacity-30 border-2 border-black rounded-2xl p-2 flex items-center space-x-2">
+    {children}
+    {label}
+  </button>
+);
 
   // Only render the game over screen if showResult is true
   if (showResult) {
@@ -140,10 +141,27 @@ export default function PokeArenaPage() {
         )}
         {playerPokemon && (
           <div className="absolute left-0 bottom-1/4 flex flex-col items-start space-y-0 ml-16 text-left">
-            <Button label="Attack" onClick={handleAttackClick} />
-            <Button label="Special Attack" />
-            <Button label="Defense" />
-            <Button label="Special Defense" />
+            <Button label="Attack" onClick={handleAttackClick}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </Button>
+            <Button label="Special Attack">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </Button>
+            <Button label="Defense">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </Button>
+            <Button label="Special Defense">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+              </svg>
+            </Button>
           </div>
         )}
         {opponentPokemon && (

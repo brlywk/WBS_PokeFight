@@ -1,154 +1,304 @@
 // poke_arena_page.jsx
-import React, { useState, useEffect, useContext } from "react";
-import { useSelectedPokemon } from "./poke_select_page";
-import { useSelectedOpponentPokemon } from "./poke_opp_select_page";
-import { useOnePokemon } from "../hooks/usePokemon"; // Import the custom hook
-import { useAllFights, useSaveFight } from "../hooks/useFights"; // Import the custom hooks for fights
-import PokeArena from "../assets/poke_arena_fightbg.svg"; // Import the background image
-import { SelectedPokemonContext, SelectedOpponentPokemonContext } from '../contexts/PokemonContexts';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import GameButton from "../components/GameButton";
+import SpDisplay from "../components/SpDisplay";
+import RoundInfo from "../components/RoundInfo";
+import { useGameContext } from "../contexts/useGameContext";
+import { useAllFights, useSaveFight } from "../hooks/useFights";
+import { useTypeEffects } from "../hooks/useTypes";
+import {
+  calculateDamageCaused,
+  createRoundInfo,
+  getTypeEffectModifier,
+} from "../utils/gameHelper";
 
 export default function PokeArenaPage() {
-  // Use the custom hook to fetch the player's and opponent's Pokemon
-  const { selectedPokemon } = useContext(SelectedPokemonContext);
-  const { selectedOpponentPokemon } = useContext(SelectedOpponentPokemonContext);
+  // ---- CONTEXT
+  const { playerName, playerPokemon, opponentName, opponentPokemon } =
+    useGameContext();
 
-  console.log('Selected Pokemon in arena page:', selectedPokemon);
-console.log('Selected Opponent Pokemon in arena page:', selectedOpponentPokemon);
-
-  const {
-    pokemon: playerPokemon,
-    loading: playerLoading,
-    error: playerError,
-  } = useOnePokemon(selectedPokemon._id);
-  const {
-    pokemon: opponentPokemon,
-    loading: opponentLoading,
-    error: opponentError,
-  } = useOnePokemon(selectedOpponentPokemon._id);
-  
-  console.log('Player Pokemon:', playerPokemon); // Log the player's Pokemon
-  console.log('Opponent Pokemon:', opponentPokemon); // Log the opponent's Pokemon
-
+  // ---- CUSTOM HOOKS
   const { allFights, allFightsLoading, allFightsError } = useAllFights();
-  const { saveFight } = useSaveFight(); // Use the custom hook to save the fight
+  const { saveFight } = useSaveFight();
+  const {
+    allTypeEffects,
+    allTypeEffectsLoading,
+    allTypeEffectsError,
+    allTypeEffectsErrorMessage,
+    fetch: fetchTypeEffects,
+  } = useTypeEffects();
 
-  const [trainerName, setTrainerName] = useState(""); // State to store the trainer's name
-  const [currentRound, setCurrentRound] = useState(1); // State to store the current round
-  const [showResult, setShowResult] = useState(false); // State to control the display of the result page
+  // ---- STATE
+  const [playerSp, setPlayerSp] = useState(3);
+  const [opponentSp, setOpponentSp] = useState(3);
+  const [playerCurrentHp, setPlayerCurrentHp] = useState(
+    playerPokemon?.stats.hp,
+  );
+  const [opponentCurrentHp, setOpponentCurrentHp] = useState(
+    opponentPokemon?.stats.hp,
+  );
+  const [round, setRound] = useState(1);
+  const [allRounds, setAllRounds] = useState([]);
+  const [winner, setWinner] = useState(null);
 
-  useEffect(() => {
-    // Fetch player's selected Pokemon
-    // Fetch opponent's selected Pokemon
-    if (allFights) {
-      allFights.fetch(); // Fetch all fights
+  // ---- PLAYER ACTIONS
+  const calculateRound = (action) => {
+    const playerSpeed = playerPokemon.stats.speed;
+    const oppSpeed = opponentPokemon.stats.speed;
+
+    const oppActions = [
+      "attack",
+      "defense",
+      "special_attack",
+      "special_defense",
+    ];
+
+    let oppActionTaken =
+      oppActions[Math.floor(Math.random() * oppActions.length)];
+
+    // check if opponent can do a special attack
+    if (
+      oppActionTaken === "special_attack" ||
+      oppActionTaken === "special_defense"
+    ) {
+      if (opponentSp === 0) {
+        oppActionTaken = oppActionTaken.split("_")[1];
+      } else {
+        setOpponentSp((prev) => prev - 1);
+      }
     }
-  }, [allFights]);
 
-  if (playerLoading || opponentLoading || allFightsLoading) return "Loading...";
-  if (playerError || opponentError || allFightsError)
-    return "An error occurred";
+    // check if player can take special action
+    if (action === "special_attack" || action === "special_defense") {
+      if (playerSp === 0) {
+        action = action.split("_")[1];
+      } else {
+        setPlayerSp((prev) => prev - 1);
+      }
+    }
 
-      // Check if playerPokemon and opponentPokemon are loaded and not undefined
-  if (!playerPokemon || !opponentPokemon) return "Loading Pokémon...";
+    // for damage calculation
+    const playerSpecialModifier = getTypeEffectModifier(
+      playerPokemon.type,
+      opponentPokemon.type,
+      allTypeEffects,
+    );
+    const oppSpecialModifier = getTypeEffectModifier(
+      opponentPokemon.type,
+      playerPokemon.type,
+      allTypeEffects,
+    );
+    const attackModifier = 10;
 
-  const handleAttackClick = () => {
-    // Calculate the damage
-    const damage = playerPokemon.stats.attack - opponentPokemon.stats.defense;
+    // Calculate damage taken by player and CPU
+    const playerDamage = calculateDamageCaused(
+      action,
+      playerPokemon,
+      oppActionTaken,
+      opponentPokemon,
+      attackModifier,
+      playerSpecialModifier,
+    );
+    const oppDamage = calculateDamageCaused(
+      oppActionTaken,
+      opponentPokemon,
+      action,
+      playerPokemon,
+      attackModifier,
+      oppSpecialModifier,
+    );
 
-    // Update the opponent's HP
-    setOpponentPokemon((prevState) => ({
-      ...prevState,
-      hp: prevState.hp - damage,
-    }));
+    const newPlayerHp = Math.max(playerCurrentHp - oppDamage, 0);
+    const newOppHp = Math.max(opponentCurrentHp - playerDamage, 0);
 
-    // Save the fight data
-    saveFight({
-      player_one_name: trainerName,
-      player_two_name: "CPU",
-      player_one_pokemon_id: playerPokemon.id,
-      player_two_pokemon_id: opponentPokemon.id,
-      rounds: [
-        // Add the round data
-        {
-          round: currentRound,
-          player_one_action: "Attack",
-          player_one_damage_taken: 0,
-          player_two_action: "Defense",
-          player_two_damage_taken: damage,
-          player_one_hp_left: playerPokemon.hp,
-          player_two_hp_left: opponentPokemon.hp - damage,
-        },
-      ],
-    });
+    setPlayerCurrentHp(newPlayerHp);
+    setOpponentCurrentHp(newOppHp);
+
+    const roundInfo = createRoundInfo(
+      round,
+      action,
+      oppDamage,
+      oppActionTaken,
+      playerDamage,
+      newPlayerHp,
+      newOppHp,
+    );
+
+    setRound((prev) => prev + 1);
+
+    // order might be wrong here... maybe fix this later...
+    setAllRounds((prev) => [...prev, roundInfo]);
+
+    const playerFaster =
+      playerPokemon.stats.speed >= opponentPokemon.stats.speed;
+
+    // determine winner before updating HP (otherwise might be out of sync)
+    if (newPlayerHp === 0 && newOppHp === 0) {
+      setWinner(playerName);
+    } else if (newOppHp === 0) {
+      setWinner(playerName);
+    } else if (newPlayerHp === 0) {
+      setWinner(opponentName);
+    }
   };
 
-// Define the Button component within the same file
-const Button = ({ label, onClick, children }) => (
-  <button onClick={onClick} className="action-button bg-white bg-opacity-30 border-2 border-black rounded-2xl p-2 flex items-center space-x-2">
-    {children}
-    {label}
-  </button>
-);
+  const persistFightResult = () => {
+    // TODO!
+    // Maybe call this only after player says so?
+    // Besides 'play again' button also display 'save this fight button'?
+    alert("Fight will be saved");
+  };
 
-  // Only render the game over screen if showResult is true
-  if (showResult) {
-    return <ResultPage />;
-  }
+  // ---- FETCH TYPE DATA ON LOAD
+  useEffect(() => {
+    fetchTypeEffects();
+  }, []);
 
-  // If showResult is false, render the game interface
   return (
-    <>
-      <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center relative">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl font-bold text-red-500 border-4 border-red-500 py-2 px-4 bg-white bg-opacity-30">
-          VS
+    <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center relative">
+      {/* Make this fullscreen and display Replay Button */}
+      {winner && (
+        <div>
+          {winner === playerName
+            ? `Congratulations ${playerName}, you won! Amazing job!`
+            : "You have failed! You will never become the best trainer in the world. You will never catch them all. Writhe in despair!"}
         </div>
-        {playerPokemon && playerPokemon.sprites && playerPokemon.sprites.back && (
-  <div className="left-1/4 bottom-1/5 flex flex-col items-center">
-    <div className="flex flex-col items-center space-y-0">
-      <div className="bg-black text-white rounded-full px-2 py-1">{playerPokemon.name}</div>
-      <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${playerPokemon.stats.hp}/${playerPokemon.stats.hp}`}</div>
-    </div>
-    <img src={playerPokemon.sprites.back} alt={playerPokemon.name} className="transform scale-x-[-1] w-48 h-48 ml-12 playerPokemon" />
-  </div>
-)}
-        {playerPokemon && (
-          <div className="absolute left-0 bottom-1/4 flex flex-col items-start space-y-0 ml-16 text-left">
-            <Button label="Attack" onClick={handleAttackClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </Button>
-            <Button label="Special Attack">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </Button>
-            <Button label="Defense">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </Button>
-            <Button label="Special Defense">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-              </svg>
-            </Button>
-          </div>
+      )}
+
+      {(!playerName || !playerPokemon || !opponentPokemon) && (
+        <div className="flex w-full h-full justify-center items-center">
+          It seems like you did not start the game properly. Please go back to
+          the{" "}
+          <Link to="/" className="text-blue-300 hover:underline mx-2">
+            Start Page
+          </Link>{" "}
+          to start the game!
+        </div>
+      )}
+
+      {!allTypeEffectsLoading &&
+        allTypeEffects &&
+        playerName &&
+        playerPokemon &&
+        opponentPokemon && (
+          <>
+            {/* VS */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl font-bold text-red-500 border-4 border-red-500 py-2 px-4 bg-white bg-opacity-30">
+              VS
+            </div>
+
+            {/* Player */}
+            <div className="relative -left-[15vw] top-[25vh]  flex flex-col items-center">
+              <div className="flex flex-col items-center space-y-1">
+                <SpDisplay amount={playerSp} />
+                <div className="bg-black text-white rounded-full px-2 py-1">
+                  {playerPokemon.name}
+                </div>
+                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${playerPokemon.stats.hp}/${playerPokemon.stats.hp}`}</div>
+              </div>
+              <img
+                src={playerPokemon.sprites.back}
+                alt={playerPokemon.name}
+                className="w-48 h-48 playerPokemon"
+              />
+            </div>
+
+            {/* Game GameButtons */}
+            <div className="absolute left-0 bottom-1/4 flex flex-col items-start space-y-0 ml-16 text-left">
+              <GameButton
+                label="Attack"
+                onClick={() => calculateRound("attack")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 256 256"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M216 34h-64a6 6 0 0 0-4.76 2.34l-65.39 85L70.6 110.1a14 14 0 0 0-19.8 0l-12.7 12.7a14 14 0 0 0 0 19.81L59.51 164L30.1 193.42a14 14 0 0 0 0 19.8l12.69 12.69a14 14 0 0 0 19.8 0L92 196.5l21.4 21.4a14 14 0 0 0 19.8 0l12.7-12.69a14 14 0 0 0 0-19.81l-11.25-11.25l85-65.39A6 6 0 0 0 222 104V40a6 6 0 0 0-6-6ZM54.1 217.42a2 2 0 0 1-2.83 0l-12.68-12.69a2 2 0 0 1 0-2.82L68 172.5L83.51 188Zm83.31-20.7l-12.69 12.7a2 2 0 0 1-2.84 0l-75.29-75.3a2 2 0 0 1 0-2.83l12.69-12.7a2 2 0 0 1 2.84 0l75.29 75.3a2 2 0 0 1 0 2.83ZM210 101.05l-83.91 64.55l-13.6-13.6l51.75-51.76a6 6 0 0 0-8.48-8.48L104 143.51l-13.6-13.6L155 46h55Z"
+                  />
+                </svg>
+              </GameButton>
+              <GameButton
+                label="Special Attack"
+                onClick={() => calculateRound("special_attack")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              </GameButton>
+              <GameButton
+                label="Defense"
+                onClick={() => calculateRound("defend")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 22q-3.475-.875-5.738-3.988T4 11.1V5l8-3l8 3v6.1q0 3.8-2.263 6.913T12 22Zm0-2.1q2.6-.825 4.3-3.3t1.7-5.5V6.375l-6-2.25l-6 2.25V11.1q0 3.025 1.7 5.5t4.3 3.3Zm0-7.9Z"
+                  />
+                </svg>
+              </GameButton>
+              <GameButton
+                label="Special Defense"
+                onClick={() => calculateRound("special_defend")}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M19 11a7.5 7.5 0 0 1-3.5 5.94L10 20l-5.5-3.06A7.5 7.5 0 0 1 1 11V3c3.38 0 6.5-1.12 9-3c2.5 1.89 5.62 3 9 3v8zm-9 1.08l2.92 2.04l-1.03-3.41l2.84-2.15l-3.56-.08L10 5.12L8.83 8.48l-3.56.08L8.1 10.7l-1.03 3.4L10 12.09z"
+                  />
+                </svg>
+              </GameButton>
+            </div>
+
+            {/* Opponent */}
+            <div className="relative left-[15vw] -top-[25vh] flex flex-col items-center">
+              <div className="flex flex-col items-center space-y-1">
+                <SpDisplay amount={opponentSp} />
+                <div className="bg-black text-white rounded-full px-2 py-1 mb-1">
+                  {opponentPokemon.name}
+                </div>
+                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${opponentPokemon.stats.hp}/${opponentPokemon.stats.hp}`}</div>
+              </div>
+              <img
+                src={opponentPokemon.sprites.front}
+                alt={opponentPokemon.name}
+                className="w-48 h-48 opponentPokemon"
+              />
+            </div>
+
+            {/* Combat Messages ... pretty ugly and desperately needs refactoring, 
+          but final projects looms over us! */}
+            <RoundInfo
+              playerName={playerName}
+              playerPokemon={playerPokemon}
+              opponentName={opponentName}
+              opponentPokemon={opponentPokemon}
+              allRounds={allRounds}
+            />
+          </>
         )}
-{opponentPokemon && opponentPokemon.sprites && opponentPokemon.sprites.front && (
-  <div className="right-1/4 bottom-1/5 flex flex-col items-center">
-    <div className="flex flex-col items-center space-y-0">
-      <div className="bg-black text-white rounded-full px-2 py-1">{opponentPokemon.name}</div>
-      <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${opponentPokemon.stats.hp}/${opponentPokemon.stats.hp}`}</div>
     </div>
-    <img src={opponentPokemon.sprites.front} alt={opponentPokemon.name} className="w-48 h-48 mr-12 opponentPokemon" />
-  </div>
-)}
-      </div>
-    </>
   );
 }
-
-
-

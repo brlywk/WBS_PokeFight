@@ -15,11 +15,6 @@ const useFetch = () => {
 
     if (!url) return;
 
-    // Debug Step 3: Log the URL being fetched to check if it's valid
-    console.log(`Fetching URL: ${url}`);
-
-    console.log(`Loading in fetch: ${isLoading}`);
-
     fetch(url, { ...config, signal: abortController.signal })
       .then((res) => {
         if (!res.ok) {
@@ -29,7 +24,6 @@ const useFetch = () => {
         return res.json();
       })
       .then((resData) => {
-        console.log('Fetched data:', resData); // Log the fetched data
         setIsLoading(false);
         setError(false);
 
@@ -37,7 +31,7 @@ const useFetch = () => {
       })
       .catch((err) => {
         // Debug Step 3: Log any errors during fetch to check if the request was aborted
-        console.error('Fetch error:', err); 
+        console.error("Fetch error:", err);
         setIsLoading(false);
         setError(true);
         setErrorMessage(err.message);
@@ -45,7 +39,6 @@ const useFetch = () => {
 
     // Debug Step 3: Log when the fetch request is aborted
     return () => {
-      console.log('Fetch request aborted');
       abortController.abort();
     };
   }, []);
@@ -54,6 +47,3 @@ const useFetch = () => {
 };
 
 export default useFetch;
-
-
-

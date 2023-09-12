@@ -4,14 +4,8 @@ import { useAllPokemon } from "../hooks/usePokemon";
 import { randomPokemonList } from "../utils/pokemonUtil";
 import PokemonCard from "./PokemonCard";
 
-const FilteredList = ({ handleSelection }) => {
-  const {
-    allPokemon,
-    allPokemonLoading,
-    allPokemonError,
-    allPokemonErrorMessage,
-    fetchAll,
-  } = useAllPokemon();
+const FilteredList = ({ handleSelection, isPlayer }) => {
+  const { allPokemon, allPokemonLoading, fetchAll } = useAllPokemon();
 
   const [filteredList, setFilteredList] = useState([]);
   const searchRef = useRef(null);
@@ -77,9 +71,15 @@ const FilteredList = ({ handleSelection }) => {
         />
       </div>
       <div className="flex justify-end space-x-4">
-        <button onClick={clearFilter} className="rounded-md">Show all</button>
-        <button onClick={newRandomList} className="rounded-md">Some random pokemont</button>
-        <button onClick={makeSuggestion} className="rounded-md">Pick one for me</button>
+        <button onClick={clearFilter} className="rounded-md">
+          Show all
+        </button>
+        <button onClick={newRandomList} className="rounded-md">
+          Some random pokemont
+        </button>
+        <button onClick={makeSuggestion} className="rounded-md">
+          Pick one for me
+        </button>
       </div>
       {allPokemonLoading && "Loading..."}
       <div className="grid grid-cols-5 gap-4">
@@ -90,6 +90,7 @@ const FilteredList = ({ handleSelection }) => {
               key={p.pokedexId}
               pokemon={p}
               handleSelection={handleSelection}
+              isPlayer={isPlayer}
             />
           ))}
       </div>

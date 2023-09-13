@@ -3,17 +3,23 @@ import FilteredList from "../components/FilteredList";
 import { Link } from "react-router-dom";
 import pokeball from "../assets/pokeball.png"; // Assuming you have a pokeball image in your assets folder
 import { useGameContext } from "../contexts/useGameContext";
+import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
+import { useEffect } from "react";
 
 const PokeOppSelectPage = () => {
-  const { opponentName, opponentPokemon, setOpponentPokemon } =
-    useGameContext();
+  const { opponentPokemon, setOpponentPokemon } = useGameContext();
 
   const handleSelection = (pokemon) => {
     setOpponentPokemon(pokemon);
   };
 
+  useEffect(() => {
+    setPageTitle("Select Pokemon");
+    setBackgroundClass("poke-opp-select");
+  }, []);
+
   return (
-    <div className="poke-opp-select flex h-full w-full flex-col items-center bg-opacity-50 bg-clip-padding backdrop-filter backdrop-blur-xl">
+    <div className="flex h-full w-full flex-col items-center bg-opacity-50">
       <h1 className="font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow">
         Opponent, select your pokemon!{" "}
         <img
@@ -34,7 +40,7 @@ const PokeOppSelectPage = () => {
           Continue
         </Link>
       )}
-      <div className="card-effect">
+      <div className="p-8">
         <FilteredList
           handleSelection={handleSelection}
           isPlayer={false}

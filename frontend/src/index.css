@@ -7,24 +7,25 @@
 
 @layer utilities {
   .homepage-bg {
-    @apply bg-no-repeat bg-center bg-cover;
+    @apply bg-no-repeat bg-center bg-cover bg-fixed;
     background-image: url("../src/assets/homepagebg.svg");
   }
 
   .poke-arena-bg {
-    @apply bg-no-repeat bg-center bg-cover;
+    @apply bg-no-repeat bg-center bg-cover bg-fixed;
     background-image: url("../src/assets/poke_arena_fightbg.svg");
   }
 
   .poke-opp-select {
-    @apply bg-no-repeat bg-center bg-cover;
+    @apply bg-no-repeat bg-center bg-cover bg-fixed;
     background-image: url("../src/assets/pokemon_opponent_selection_pagebg.svg");
   }
 
   .poke-select {
-    @apply bg-no-repeat bg-center bg-cover;
+    @apply bg-no-repeat bg-center bg-cover bg-fixed;
     background-image: url("../src/assets/pokemon_selection_pagebg.svg");
   }
+
   .text-shadow {
     text-shadow: -1px 0 black, 0 1px black, 5px 0 black, 0 -1px black;
   }
@@ -32,6 +33,10 @@
 
 .playerPokemon {
   @apply animate-drop;
+}
+
+.opponentPokemon {
+  @apply animate-bounce;
 }
 
 .special-attack-animation {

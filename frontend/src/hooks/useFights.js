@@ -22,15 +22,18 @@ export const useSingleFight = () => {
 };
 
 export const useSaveFight = () => {
-  const { post } = useFetch();
+  const { data, isLoading, error, errorMessage, refetch: save } = useFetch("");
 
-  const saveFight = async (fightData) => {
-    try {
-      await post(fightEndpoint + '/save', fightData);
-    } catch (error) {
-      console.error('Failed to save fight:', error);
-    }
+  const saveFight = (fight) => {
+    const options = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(fight) };
+    save(fightEndpoint + "/save", options);
   };
 
-  return { saveFight };
+  return {
+    saveFightData: data,
+    saveFightLoading: isLoading,
+    saveFightError: error,
+    saveFightErrorMessage: errorMessage,
+    saveFight,
+  };
 };

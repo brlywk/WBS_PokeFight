@@ -70,14 +70,14 @@ const FilteredList = ({ handleSelection, isPlayer }) => {
           className="rounded-full p-2"
         />
       </div>
-      <div className="flex justify-end space-x-4">
-        <button onClick={clearFilter} className="rounded-md">
+      <div className="flex justify-end space-x-4 my-4">
+        <button onClick={clearFilter} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
           Show all
         </button>
-        <button onClick={newRandomList} className="rounded-md">
+        <button onClick={newRandomList} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
           Some random pokemont
         </button>
-        <button onClick={makeSuggestion} className="rounded-md">
+        <button onClick={makeSuggestion} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
           Pick one for me
         </button>
       </div>
@@ -86,12 +86,7 @@ const FilteredList = ({ handleSelection, isPlayer }) => {
         {!allPokemonLoading &&
           filteredList &&
           filteredList.map((p) => (
-            <PokemonCard
-              key={p.pokedexId}
-              pokemon={p}
-              handleSelection={handleSelection}
-              isPlayer={isPlayer}
-            />
+            <PokemonCard key={p.pokedexId} pokemon={p} handleSelection={handleSelection} isPlayer={isPlayer} />
           ))}
       </div>
     </>

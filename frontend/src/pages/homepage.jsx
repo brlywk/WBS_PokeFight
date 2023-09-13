@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useGameContext } from "../contexts/useGameContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
 
 // Define the Pokemon sprite URLs
 const pokemonSprites = {
@@ -31,8 +32,13 @@ function HomePage() {
     }
   };
 
+  useEffect(() => {
+    setPageTitle();
+    setBackgroundClass("homepage-bg");
+  }, []);
+
   return (
-    <div className="homepage-bg flex h-full w-full flex-col items-center justify-center ">
+    <div className="flex h-full w-full flex-col items-center justify-center ">
       <img src="/PokeFight.webp" alt="PokeFight Logo" />
       <img
         src={pokemonSprites.front}
@@ -44,18 +50,24 @@ function HomePage() {
         value={playerName}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
-        className={`text-xl bg-white/50 border rounded-md p-2 ${
+        className={`font-['Press_Start_2P'] mb-6 text-xl bg-white/50 border rounded-md p-2 ${
           playerName ? "border-black/50" : "border-red-500/50"
         }`}
         placeholder="Enter trainer name"
       />
       <button
         onClick={handleEnterClick}
-        className="font-['Press_Start_2P'] text-4xl text-yellow-500 font-bold mt-5 text-shadow"
+        className="font-['Press_Start_2P'] text-6xl text-yellow-500 font-bold mb-8 text-shadow"
       >
         Enter
       </button>
       {/* Other components */}
+      <Link
+        to="/leaderboard"
+        className="font-['Press_Start_2P'] text-xl text-white font-bold mt-5 text-shadow"
+      >
+        Leaderboard
+      </Link>
     </div>
   );
 }

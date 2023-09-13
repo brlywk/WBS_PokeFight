@@ -21,6 +21,9 @@ const useFetch = () => {
           throw new Error("Something went wrong!");
         }
 
+        // if we get status 201 we have posted something and are good
+        if (res.status === 201) return;
+
         return res.json();
       })
       .then((resData) => {
@@ -30,14 +33,11 @@ const useFetch = () => {
         setData(resData);
       })
       .catch((err) => {
-        // Debug Step 3: Log any errors during fetch to check if the request was aborted
-        console.error("Fetch error:", err);
         setIsLoading(false);
         setError(true);
         setErrorMessage(err.message);
       });
 
-    // Debug Step 3: Log when the fetch request is aborted
     return () => {
       abortController.abort();
     };

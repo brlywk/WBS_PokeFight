@@ -1,17 +1,18 @@
 // poke_arena_page.jsx
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GameButton from "../components/GameButton";
-import SpDisplay from "../components/SpDisplay";
 import RoundInfo from "../components/RoundInfo";
+import SpDisplay from "../components/SpDisplay";
 import { useGameContext } from "../contexts/useGameContext";
-import { useAllFights, useSaveFight } from "../hooks/useFights";
+import { useSaveFight } from "../hooks/useFights";
 import { useTypeEffects } from "../hooks/useTypes";
 import {
   calculateDamageCaused,
   createRoundInfo,
   getTypeEffectModifier,
 } from "../utils/gameHelper";
+import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
 
 export default function PokeArenaPage() {
   // ---- CONTEXT
@@ -19,15 +20,14 @@ export default function PokeArenaPage() {
     useGameContext();
 
   // ---- CUSTOM HOOKS
-  const { allFights, allFightsLoading, allFightsError } = useAllFights();
-  const { saveFight } = useSaveFight();
   const {
     allTypeEffects,
     allTypeEffectsLoading,
-    allTypeEffectsError,
-    allTypeEffectsErrorMessage,
     fetch: fetchTypeEffects,
   } = useTypeEffects();
+  const { saveFight } = useSaveFight();
+
+  const navigate = useNavigate();
 
   // ---- STATE
   const [playerSp, setPlayerSp] = useState(3);
@@ -44,9 +44,6 @@ export default function PokeArenaPage() {
 
   // ---- PLAYER ACTIONS
   const calculateRound = (action) => {
-    const playerSpeed = playerPokemon.stats.speed;
-    const oppSpeed = opponentPokemon.stats.speed;
-
     const oppActions = [
       "attack",
       "defense",
@@ -130,8 +127,7 @@ export default function PokeArenaPage() {
     // order might be wrong here... maybe fix this later...
     setAllRounds((prev) => [...prev, roundInfo]);
 
-    const playerFaster =
-      playerPokemon.stats.speed >= opponentPokemon.stats.speed;
+    // const playerFaster = playerPokemon.stats.speed >= opponentPokemon.stats.speed;
 
     // determine winner before updating HP (otherwise might be out of sync)
     if (newPlayerHp === 0 && newOppHp === 0) {
@@ -143,29 +139,41 @@ export default function PokeArenaPage() {
     }
   };
 
-  const persistFightResult = () => {
-    // TODO!
-    // Maybe call this only after player says so?
-    // Besides 'play again' button also display 'save this fight button'?
-    alert("Fight will be saved");
+  const persistFightResult = async () => {
+    const fightResult = {
+      winner,
+      player_one_name: playerName,
+      player_two_name: opponentName,
+      player_one_pokemon_id: playerPokemon.pokedexId,
+      player_two_pokemon_id: opponentPokemon.pokedexId,
+      rounds: allRounds,
+    };
+
+    saveFight(fightResult);
+    return;
   };
 
   // ---- FETCH TYPE DATA ON LOAD
   useEffect(() => {
     fetchTypeEffects();
+    setPageTitle("FIGHT TO THE DEATH");
+    setBackgroundClass("poke-arena-bg");
   }, []);
 
-  return (
-    <div className="poke-arena-bg flex h-full w-full flex-col items-center justify-center relative">
-      {/* Make this fullscreen and display Replay Button */}
-      {winner && (
-        <div>
-          {winner === playerName
-            ? `Congratulations ${playerName}, you won! Amazing job!`
-            : "You have failed! You will never become the best trainer in the world. You will never catch them all. Writhe in despair!"}
-        </div>
-      )}
+  useEffect(() => {
+    if (!winner) return;
 
+    // this feels wrong but right now it's the easiest way...
+    async function persistFight() {
+      await persistFightResult();
+    }
+
+    persistFight();
+    navigate("/result");
+  }, [winner]);
+
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center relative">
       {(!playerName || !playerPokemon || !opponentPokemon) && (
         <div className="flex w-full h-full justify-center items-center">
           It seems like you did not start the game properly. Please go back to
@@ -195,7 +203,7 @@ export default function PokeArenaPage() {
                 <div className="bg-black text-white rounded-full px-2 py-1">
                   {playerPokemon.name}
                 </div>
-                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${playerPokemon.stats.hp}/${playerPokemon.stats.hp}`}</div>
+                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${playerCurrentHp}/${playerPokemon.stats.hp}`}</div>
               </div>
               <img
                 src={playerPokemon.sprites.back}
@@ -279,7 +287,7 @@ export default function PokeArenaPage() {
                 <div className="bg-black text-white rounded-full px-2 py-1 mb-1">
                   {opponentPokemon.name}
                 </div>
-                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${opponentPokemon.stats.hp}/${opponentPokemon.stats.hp}`}</div>
+                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${opponentCurrentHp}/${opponentPokemon.stats.hp}`}</div>
               </div>
               <img
                 src={opponentPokemon.sprites.front}

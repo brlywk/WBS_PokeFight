@@ -173,6 +173,7 @@ export default function PokeArenaPage() {
   }, [winner]);
 
   return (
+    <div className="animate-fade-in-from-bottom">
     <div className="flex h-full w-full flex-col items-center justify-center relative">
       {(!playerName || !playerPokemon || !opponentPokemon) && (
         <div className="flex w-full h-full justify-center items-center">
@@ -192,12 +193,12 @@ export default function PokeArenaPage() {
         opponentPokemon && (
           <>
             {/* VS */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl font-bold text-red-500 border-4 border-red-500 py-2 px-4 bg-white bg-opacity-30">
+            <div className="relative top-20  transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-red-500 border-4 border-red-500 py-2 px-4 bg-white bg-opacity-30">
               VS
             </div>
 
             {/* Player */}
-            <div className="relative -left-[15vw] top-[25vh]  flex flex-col items-center">
+            <div className="relative -left-[25vw] top-[30vh]  flex flex-col items-center">
               <div className="flex flex-col items-center space-y-1">
                 <SpDisplay amount={playerSp} />
                 <div className="bg-black text-white rounded-full px-2 py-1">
@@ -213,8 +214,9 @@ export default function PokeArenaPage() {
             </div>
 
             {/* Game GameButtons */}
-            <div className="absolute left-0 bottom-1/4 flex flex-col items-start space-y-0 ml-16 text-left">
-              <GameButton
+            <div className="fixed left-0 bottom-1/4 flex flex-wrap md:flex-nowrap flex-row md:flex-col items-start space-x-1 md:space-x-0 md:space-y-4 ml-16 text-left">            
+            <GameButton
+              className="min-w-max"
                 label="Attack"
                 onClick={() => calculateRound("attack")}
               >
@@ -280,8 +282,9 @@ export default function PokeArenaPage() {
               </GameButton>
             </div>
 
+
             {/* Opponent */}
-            <div className="relative left-[15vw] -top-[25vh] flex flex-col items-center">
+            <div className="relative left-[20vw] -top-[25vh] flex flex-col items-center">
               <div className="flex flex-col items-center space-y-1">
                 <SpDisplay amount={opponentSp} />
                 <div className="bg-black text-white rounded-full px-2 py-1 mb-1">
@@ -307,6 +310,7 @@ export default function PokeArenaPage() {
             />
           </>
         )}
+    </div>
     </div>
   );
 }

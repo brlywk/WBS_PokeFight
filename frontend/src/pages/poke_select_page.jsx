@@ -5,7 +5,8 @@ import { useGameContext } from "../contexts/useGameContext";
 import { useEffect } from "react";
 import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
 
-function PokemonSelectionPage() {
+const PokemonSelectionPage = ({ setIsLoading }) => {
+  console.log('PokemonSelectionPage rendered');
   const { playerName, playerPokemon, setPlayerPokemon } = useGameContext();
 
   const handleSelection = (pokemon) => {
@@ -17,7 +18,16 @@ function PokemonSelectionPage() {
     setBackgroundClass("poke-select");
   }, []);
 
+  useEffect(() => {
+    // Simulate data fetching
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, [setIsLoading]);
+
+
   return (
+    <div className="animate-fade-in-from-bottom">
     <div className="flex h-full w-full flex-col items-center bg-opacity-50">
       <h1 className="font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow">
         Hi {playerName}, select your pokemon!{" "}
@@ -33,11 +43,11 @@ function PokemonSelectionPage() {
       </h1>
       {playerPokemon && (
         <Link
-          to="/opponent-selection"
-          className="continue-button font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow"
-        >
-          Continue
-        </Link>
+  to="/opponent-selection"
+  className="continue-button font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow hover:text-gray-200 z-50"
+>
+  Continue
+</Link>
       )}
       <div className="p-8">
         <FilteredList
@@ -47,7 +57,9 @@ function PokemonSelectionPage() {
         />
       </div>
     </div>
+    </div>
   );
 }
 
 export default PokemonSelectionPage;
+

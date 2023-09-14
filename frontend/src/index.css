@@ -32,7 +32,7 @@
 }
 
 .playerPokemon {
-  @apply animate-drop;
+  @apply animate-bounce;
 }
 
 .opponentPokemon {
@@ -49,3 +49,19 @@
     object-position: 100% 0;
   }
 }
+
+.loading-screen {
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-button {
+  width: 200px;
+  height: 20px;
+  background-color: #ddd;
+  animation: loading 3s linear infinite;
+}
+

@@ -19,6 +19,7 @@ const PokeOppSelectPage = () => {
   }, []);
 
   return (
+    <div className="animate-fade-in-from-bottom">
     <div className="flex h-full w-full flex-col items-center bg-opacity-50">
       <h1 className="font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow">
         Opponent, select your pokemon!{" "}
@@ -35,7 +36,7 @@ const PokeOppSelectPage = () => {
       {opponentPokemon && (
         <Link
           to="/arena"
-          className="continue-button font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow"
+          className="continue-button font-['Press_Start_2P'] text-2xl text-white font-bold mt-5 text-shadow  hover:text-gray-200 z-50"
         >
           Continue
         </Link>
@@ -47,6 +48,7 @@ const PokeOppSelectPage = () => {
           className="individual-card bg-opacity-50 bg-clip-padding backdrop-filter backdrop-blur-xl shadow-lg rounded-lg hover:scale-105 transition-transform duration-200"
         />
       </div>
+    </div>
     </div>
   );
 };

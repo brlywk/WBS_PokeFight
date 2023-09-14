@@ -12,9 +12,16 @@ const pokemonSprites = {
     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
 };
 
-function HomePage() {
+function HomePage({ setIsLoading }) {
   const { playerName, setPlayerName } = useGameContext();
   const navigate = useNavigate();
+
+  const handleEnterClick = () => {
+    if (playerName) {
+      setIsLoading(true);
+      navigate("/pokemon-selection");
+    }
+  };
 
   const handleInputChange = (event) => {
     setPlayerName(event.target.value);
@@ -26,11 +33,7 @@ function HomePage() {
     }
   };
 
-  const handleEnterClick = () => {
-    if (playerName) {
-      navigate("/pokemon-selection");
-    }
-  };
+
 
   useEffect(() => {
     setPageTitle();

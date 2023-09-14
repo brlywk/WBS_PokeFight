@@ -16,10 +16,23 @@ export default {
           '46%': { transform: 'translateY(5px)' },
           '100%': { transform: 'translateY(0)' }
         },
-        reveal: {
-          // Define your keyframes for the reveal animation here
-        }
-      }
+        fadeInFromBottom: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+      },
+      animation: {
+        'fade-in-from-bottom': 'fadeInFromBottom 0.5s ease-in-out',
+      },
+    },
+    reveal: {
+      // Define your keyframes for the reveal animation here
     }
   },
   plugins: [],

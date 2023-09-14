@@ -56,6 +56,8 @@ const Leaderboard = () => {
   }, [allFights]);
 
   return (
+    <div className="animate-fade-in-from-bottom">
+
     <div className="flex h-full w-full flex-col items-center justify-start ">
       <Link
         to="/"
@@ -177,6 +179,8 @@ const Leaderboard = () => {
         </div>
       )}
     </div>
+    </div>
+
   );
 };
 

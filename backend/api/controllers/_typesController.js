@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Type from "../schema/typeEffectSchema.js";
+import Type from "../schema/_typeEffectSchema.js";
 
 /**
  * @desc    Returns all Pokemon types

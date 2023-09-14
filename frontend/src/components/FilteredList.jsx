@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAllPokemon } from "../hooks/usePokemon";
 import { randomPokemonList } from "../utils/pokemonUtil";
 import PokemonCard from "./PokemonCard";
+import Loading from "./Loading";
 
 const FilteredList = ({ handleSelection, isPlayer }) => {
   const { allPokemon, allPokemonLoading, fetchAll } = useAllPokemon();
@@ -61,34 +62,54 @@ const FilteredList = ({ handleSelection, isPlayer }) => {
 
   return (
     <>
-      <div className="flex justify-center space-x-4">
-        <input
-          type="text"
-          onChange={handleSearchInput}
-          placeholder="Search Pokemon"
-          ref={searchRef}
-          className="rounded-full p-2"
-        />
-      </div>
-      <div className="flex justify-end space-x-4 my-4">
-        <button onClick={clearFilter} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
-          Show all
-        </button>
-        <button onClick={newRandomList} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
-          Some random pokemont
-        </button>
-        <button onClick={makeSuggestion} className="border border-black rounded-md p-2 bg-white/25 hover:bg-white/50">
-          Pick one for me
-        </button>
-      </div>
-      {allPokemonLoading && "Loading..."}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {!allPokemonLoading &&
-          filteredList &&
-          filteredList.map((p) => (
-            <PokemonCard key={p.pokedexId} pokemon={p} handleSelection={handleSelection} isPlayer={isPlayer} />
-          ))}
-      </div>
+      {allPokemonLoading && <Loading />}
+
+      {!allPokemonLoading && filteredList && (
+        <>
+          <>
+            <div className="flex justify-center space-x-4">
+              <input
+                type="text"
+                onChange={handleSearchInput}
+                placeholder="Search Pokemon"
+                ref={searchRef}
+                className="rounded-full p-2"
+              />
+            </div>
+            <div className="my-4 flex justify-end space-x-4">
+              <button
+                onClick={clearFilter}
+                className="rounded-md border border-black bg-white/25 p-2 hover:bg-white/50"
+              >
+                Show all
+              </button>
+              <button
+                onClick={newRandomList}
+                className="rounded-md border border-black bg-white/25 p-2 hover:bg-white/50"
+              >
+                Some random pokemont
+              </button>
+              <button
+                onClick={makeSuggestion}
+                className="rounded-md border border-black bg-white/25 p-2 hover:bg-white/50"
+              >
+                Pick one for me
+              </button>
+            </div>
+          </>
+
+          <div className="grid grid-cols-1 gap-4 pb-8 md:grid-cols-3 lg:grid-cols-5">
+            {filteredList.map((p) => (
+              <PokemonCard
+                key={p.pokedexId}
+                pokemon={p}
+                handleSelection={handleSelection}
+                isPlayer={isPlayer}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 };

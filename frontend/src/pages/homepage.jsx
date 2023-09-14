@@ -12,13 +12,12 @@ const pokemonSprites = {
     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
 };
 
-function HomePage({ setIsLoading }) {
+function HomePage() {
   const { playerName, setPlayerName } = useGameContext();
   const navigate = useNavigate();
 
   const handleEnterClick = () => {
     if (playerName) {
-      setIsLoading(true);
       navigate("/pokemon-selection");
     }
   };
@@ -33,8 +32,6 @@ function HomePage({ setIsLoading }) {
     }
   };
 
-
-
   useEffect(() => {
     setPageTitle();
     setBackgroundClass("homepage-bg");
@@ -46,7 +43,7 @@ function HomePage({ setIsLoading }) {
       <img
         src={pokemonSprites.front}
         alt="Pokemon Sprite"
-        className="w-48 h-48 animate-bounce"
+        className="h-48 w-48 animate-bounce"
       />
       <input
         type="text"
@@ -60,14 +57,14 @@ function HomePage({ setIsLoading }) {
       />
       <button
         onClick={handleEnterClick}
-        className="font-['Press_Start_2P'] text-6xl text-yellow-500 font-bold mb-8 text-shadow"
+        className="text-shadow mb-8 font-['Press_Start_2P'] text-6xl font-bold text-yellow-500"
       >
         Enter
       </button>
       {/* Other components */}
       <Link
         to="/leaderboard"
-        className="font-['Press_Start_2P'] text-xl text-white font-bold mt-5 text-shadow"
+        className="text-shadow mt-5 font-['Press_Start_2P'] text-xl font-bold text-white"
       >
         Leaderboard
       </Link>

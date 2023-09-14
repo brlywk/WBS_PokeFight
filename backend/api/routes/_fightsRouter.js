@@ -3,7 +3,7 @@ import {
   getFightById,
   getAllFights,
   postNewFight,
-} from "../controllers/fightsController.js";
+} from "../controllers/_fightsController.js";
 
 const fightsRouter = Router();
 

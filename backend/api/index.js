@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import db from "./data/mongoDbConnection.js";
-import errorHandler from "./middleware/errorHandling.js";
-import apiRouter from "./routes/apiRouter.js";
+import db from "./data/_mongoDbConnection.js";
+import errorHandler from "./middleware/_errorHandling.js";
+import apiRouter from "./routes/_apiRouter.js";
 
 dotenv.config();
 

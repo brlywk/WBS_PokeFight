@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Pokemon from "../schema/pokemonSchema.js";
+import Pokemon from "../schema/_pokemonSchema.js";
 
 /**
  * @desc    Returns all pokemon or a search result if query is specified

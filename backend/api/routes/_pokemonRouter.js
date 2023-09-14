@@ -3,7 +3,7 @@ import {
   getPokemon,
   getSinglePokemon,
   getSinglePokemonInfo,
-} from "../controllers/pokemonController.js";
+} from "../controllers/_pokemonController.js";
 
 const pokemonRouter = Router();
 

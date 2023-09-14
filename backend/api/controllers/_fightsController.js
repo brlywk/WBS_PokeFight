@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Fight from "../schema/fightSchema.js";
+import Fight from "../schema/_fightSchema.js";
 
 /**
  * @desc    Returns all fights ordered by creation date descending
@@ -9,8 +9,6 @@ const getAllFights = asyncHandler(async (req, res, next) => {
   const { page = 1 } = req.query;
 
   const startAt = (page - 1) * n;
-
-  console.log("n", n, "page", page);
 
   const results = await Fight.find()
     .sort("-createdAt")

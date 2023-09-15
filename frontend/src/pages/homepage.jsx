@@ -3,8 +3,8 @@ import { useGameContext } from "../contexts/useGameContext";
 import { Link, useNavigate } from "react-router-dom";
 import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
 import { Howl } from 'howler'; // Import Howl from howler library
-import selectEnterSound from '../assets/pokemon-ui-selectenter.flac';
-import loopThemeSound from '../assets/rpg-loop-theme.mp3';
+import selectEnterSound from '/pokemon-ui-selectenter.flac';
+import loopThemeSound from '/rpg-loop-theme.mp3';
 
 // Define the Pokemon sprite URLs
 const pokemonSprites = {

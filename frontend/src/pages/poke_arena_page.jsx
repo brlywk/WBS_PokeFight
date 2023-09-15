@@ -42,6 +42,8 @@ export default function PokeArenaPage() {
   const [round, setRound] = useState(1);
   const [allRounds, setAllRounds] = useState([]);
   const [winner, setWinner] = useState(null);
+  const [isAttacking, setIsAttacking] = useState(false); // New state variable for controlling player's attack animation
+  const [isOpponentAttacking, setIsOpponentAttacking] = useState(false); // New state variable for controlling opponent's attack animation
 
   // ---- PLAYER ACTIONS
   const calculateRound = (action) => {
@@ -68,12 +70,20 @@ export default function PokeArenaPage() {
     }
 
     // check if player can take special action
-    if (action === "special_attack" || action === "special_defense") {
+    if (action === "attack" || action === "special_attack") {
+      setIsAttacking(true); // Set isAttacking to true when attack or special attack action is taken
+      setTimeout(() => setIsAttacking(false), 500); // Reset isAttacking to false after 500ms
       if (playerSp === 0) {
         action = action.split("_")[1];
       } else {
         setPlayerSp((prev) => prev - 1);
       }
+    }
+
+    // Set isOpponentAttacking to true when opponent takes attack or special attack action
+    if (oppActionTaken === "attack" || oppActionTaken === "special_attack") {
+      setIsOpponentAttacking(true);
+      setTimeout(() => setIsOpponentAttacking(false), 500); // Reset isOpponentAttacking to false after 500ms
     }
 
     // for damage calculation
@@ -197,7 +207,7 @@ export default function PokeArenaPage() {
               <img
                 src={opponentPokemon.sprites.front}
                 alt={opponentPokemon.name}
-                className="opponentPokemon h-48 w-48"
+                className={`opponentPokemon h-48 w-48 ${isOpponentAttacking ? 'opponent-attack-animation' : ''}`} // Add opponent-attack-animation class when isOpponentAttacking is true
               />
             </div>
 
@@ -218,7 +228,7 @@ export default function PokeArenaPage() {
               <img
                 src={playerPokemon.sprites.back}
                 alt={playerPokemon.name}
-                className="playerPokemon h-48 w-48"
+                className={`playerPokemon h-48 w-48 ${isAttacking ? 'attack-animation' : ''}`} // Add attack-animation class when isAttacking is true
               />
             </div>
 
@@ -269,7 +279,7 @@ export default function PokeArenaPage() {
                 >
                   <path
                     fill="currentColor"
-                    d="M12 22q-3.475-.875-5.738-3.988T4 11.1V5l8-3l8 3v6.1q0 3.8-2.263 6.913T12 22Zm0-2.1q2.6-.825 4.3-3.3t1.7-5.5V6.375l-6-2.25l-6 2.25V11.1q0 3.025 1.7 5.5t4.3 3.3Zm0-7.9Z"
+                    d="M19 11a7.5 7.5 0 0 1-3.5 5.94L10 20l-5.5-3.06A7.5 7.5 0 0 1 1 11V3c3.38 0 6.5-1.12 9-3c2.5 1.89 5.62 3 9 3v8zm-9 1.08l2.92 2.04l-1.03-3.41l2.84-2.15l-3.56-.08L10 5.12L8.83 8.48l-3.56.08L8.1 10.7l-1.03 3.4L10 12.09z"
                   />
                 </svg>
               </GameButton>
@@ -304,3 +314,5 @@ export default function PokeArenaPage() {
     </div>
   );
 }
+
+

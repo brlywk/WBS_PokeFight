@@ -43,10 +43,25 @@
   @apply animate-bounce;
 }
 
-.special-attack-animation {
-  animation: play both steps(var(--frames)) var(--runs);
-  animation-timeline: scroll();
+@keyframes attack {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(350px, -300px); } /* Adjust the second value to negative for upward movement and increased the distance to 300px */
+  100% { transform: translate(0, 0); }
 }
+
+.attack-animation {
+  animation: attack 0.5s ease-in-out;
+}
+@keyframes opponent-attack {
+  0% { transform: translateX(0); }
+  50% { transform: translate(-3500px, 300px); } /* Adjust the second value to positive for downward movement towards the playerpokemon */
+  100% { transform: translateX(0); }
+}
+
+.opponent-attack-animation {
+  animation: opponent-attack 0.5s ease-in-out;
+}
+
 
 @keyframes play {
   to {

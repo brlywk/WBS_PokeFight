@@ -25,9 +25,6 @@ const PokemonSelectionPage = () => {
             src="/pokeball.png"
             alt="pokeball"
             style={{
-              height: "1em",
-              verticalAlign: "middle",
-              animation: "bounce 1s infinite",
             }}
           />
         </h1>

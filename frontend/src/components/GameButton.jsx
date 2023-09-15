@@ -1,13 +1,11 @@
 export default function GameButton({ label, onClick, children }) {
   return (
-    <div className="p-2">
-      <button
-        onClick={onClick}
-        className="bg-white bg-opacity-30 border-2 border-black rounded-2xl p-2 flex items-center gap-2 hover:bg-black hover:text-white w-full md:w-[10vw]"
-      >
-        {children}
-        {label}
-      </button>
-    </div>
+    <button
+      onClick={onClick}
+      className="flex w-full min-w-max items-center gap-2 rounded-2xl border-2 border-black bg-white bg-opacity-30 p-2 backdrop-blur hover:bg-black hover:text-white"
+    >
+      {children}
+      <div className="flex justify-start">{label}</div>
+    </button>
   );
 }

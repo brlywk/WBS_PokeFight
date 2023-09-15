@@ -1,9 +1,10 @@
 // poke_arena_page.jsx
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import GameButton from "../components/GameButton";
 import RoundInfo from "../components/RoundInfo";
 import SpDisplay from "../components/SpDisplay";
+import Loading from "../components/Loading";
 import { useGameContext } from "../contexts/useGameContext";
 import { useSaveFight } from "../hooks/useFights";
 import { useTypeEffects } from "../hooks/useTypes";
@@ -127,8 +128,6 @@ export default function PokeArenaPage() {
     // order might be wrong here... maybe fix this later...
     setAllRounds((prev) => [...prev, roundInfo]);
 
-    // const playerFaster = playerPokemon.stats.speed >= opponentPokemon.stats.speed;
-
     // determine winner before updating HP (otherwise might be out of sync)
     if (newPlayerHp === 0 && newOppHp === 0) {
       setWinner(playerName);
@@ -173,18 +172,12 @@ export default function PokeArenaPage() {
   }, [winner]);
 
   return (
-    <div className="animate-fade-in-from-bottom">
-    <div className="flex h-full w-full flex-col items-center justify-center relative">
+    <div className="animate-fade-in-from-bottom flex h-full w-full flex-col items-center justify-center">
       {(!playerName || !playerPokemon || !opponentPokemon) && (
-        <div className="flex w-full h-full justify-center items-center">
-          It seems like you did not start the game properly. Please go back to
-          the{" "}
-          <Link to="/" className="text-blue-300 hover:underline mx-2">
-            Start Page
-          </Link>{" "}
-          to start the game!
-        </div>
+        <Navigate to="/" replace="true" />
       )}
+
+      {allTypeEffectsLoading && <Loading />}
 
       {!allTypeEffectsLoading &&
         allTypeEffects &&
@@ -192,31 +185,46 @@ export default function PokeArenaPage() {
         playerPokemon &&
         opponentPokemon && (
           <>
+            {/* Opponent */}
+            <div className="translate-x-1/2 translate-y-4 md:translate-x-full md:translate-y-0 lg:translate-x-[175%]">
+              <div className="flex flex-col items-center space-y-1">
+                <SpDisplay amount={opponentSp} />
+                <div className="mb-1 rounded-full bg-black px-2 py-1 text-white">
+                  {opponentPokemon.name}
+                </div>
+                <div className="rounded-full bg-green-500 px-2 py-1 text-white">{`${opponentCurrentHp}/${opponentPokemon.stats.hp}`}</div>
+              </div>
+              <img
+                src={opponentPokemon.sprites.front}
+                alt={opponentPokemon.name}
+                className="opponentPokemon h-48 w-48"
+              />
+            </div>
+
             {/* VS */}
-            <div className="relative top-20  transform -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-red-500 border-4 border-red-500 py-2 px-4 bg-white bg-opacity-30">
+            <div className="border-y-2 border-red-500 bg-white/25 p-2 text-center text-xl font-bold text-red-500 backdrop-blur max-md:w-full md:border-2 md:p-4 md:text-4xl">
               VS
             </div>
 
             {/* Player */}
-            <div className="relative -left-[25vw] top-[30vh]  flex flex-col items-center">
+            <div className="-translate-x-1/2 translate-y-4 md:-translate-x-full md:translate-y-0 lg:-translate-x-[175%]">
               <div className="flex flex-col items-center space-y-1">
                 <SpDisplay amount={playerSp} />
-                <div className="bg-black text-white rounded-full px-2 py-1">
+                <div className="rounded-full bg-black px-2 py-1 text-white">
                   {playerPokemon.name}
                 </div>
-                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${playerCurrentHp}/${playerPokemon.stats.hp}`}</div>
+                <div className="rounded-full bg-green-500 px-2 py-1 text-white">{`${playerCurrentHp}/${playerPokemon.stats.hp}`}</div>
               </div>
               <img
                 src={playerPokemon.sprites.back}
                 alt={playerPokemon.name}
-                className="w-48 h-48 playerPokemon"
+                className="playerPokemon h-48 w-48"
               />
             </div>
 
             {/* Game GameButtons */}
-            <div className="fixed left-0 bottom-1/4 flex flex-wrap md:flex-nowrap flex-row md:flex-col items-start space-x-1 md:space-x-0 md:space-y-4 ml-16 text-left">            
-            <GameButton
-              className="min-w-max"
+            <div className="fixed right-4 z-50 flex translate-y-3/4 flex-col gap-2 md:bottom-4 md:left-4 md:w-1/4 md:min-w-max md:translate-y-0 lg:w-1/5">
+              <GameButton
                 label="Attack"
                 onClick={() => calculateRound("attack")}
               >
@@ -282,23 +290,6 @@ export default function PokeArenaPage() {
               </GameButton>
             </div>
 
-
-            {/* Opponent */}
-            <div className="relative left-[20vw] -top-[25vh] flex flex-col items-center">
-              <div className="flex flex-col items-center space-y-1">
-                <SpDisplay amount={opponentSp} />
-                <div className="bg-black text-white rounded-full px-2 py-1 mb-1">
-                  {opponentPokemon.name}
-                </div>
-                <div className="bg-green-500 text-white rounded-full px-2 py-1">{`${opponentCurrentHp}/${opponentPokemon.stats.hp}`}</div>
-              </div>
-              <img
-                src={opponentPokemon.sprites.front}
-                alt={opponentPokemon.name}
-                className="w-48 h-48 opponentPokemon"
-              />
-            </div>
-
             {/* Combat Messages ... pretty ugly and desperately needs refactoring, 
           but final projects looms over us! */}
             <RoundInfo
@@ -310,7 +301,6 @@ export default function PokeArenaPage() {
             />
           </>
         )}
-    </div>
     </div>
   );
 }

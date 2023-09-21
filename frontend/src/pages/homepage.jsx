@@ -5,6 +5,8 @@ import { setBackgroundClass, setPageTitle } from "../utils/pageUtil";
 import { Howl } from 'howler'; // Import Howl from howler library
 import selectEnterSound from '/pokemon-ui-selectenter.flac';
 import loopThemeSound from '/rpg-loop-theme.mp3';
+import { Dialog, Transition } from '@headlessui/react'; // Import Dialog and Transition from headlessui library
+import { Fragment, useRef } from 'react'; // Import Fragment and useRef from react library
 
 // Define the Pokemon sprite URLs
 const pokemonSprites = {
@@ -19,6 +21,8 @@ function HomePage() {
   const { playerName, setPlayerName } = useGameContext();
   const navigate = useNavigate();
   const [isMuted, setIsMuted] = useState(false); // State to handle mute/unmute
+  const [isOpen, setIsOpen] = useState(false); // State to handle open/close of the modal
+  const cancelButtonRef = useRef(null); // Ref for the cancel button in the modal
 
   // Create Howl instances for the sounds
   const selectEnterSoundHowl = new Howl({ src: [selectEnterSound] });
@@ -58,6 +62,13 @@ function HomePage() {
     setIsMuted(!isMuted); // Toggle mute/unmute
   };
 
+  const handleModalOpen = () => {
+    setIsOpen(true); // Open the modal
+  };
+
+  const handleModalClose = () => {
+    setIsOpen(false); // Close the modal
+  };
 
   useEffect(() => {
     setPageTitle();
@@ -105,12 +116,97 @@ function HomePage() {
       >
         Leaderboard
       </Link>
+      <div className="absolute bottom-0 text-center w-full pb-2">
+        <p className="text-xs">Copyright Notice: "Pokémon and Pokémon character names are trademarks of Nintendo, The Pokémon Company, and Game Freak. This is a non-commercial, educational project."</p>
+        <button onClick={handleModalOpen} className="text-xs underline">Full Copyright Notice and Disclaimer</button>
+      </div>
+      <Transition show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto"
+          initialFocus={cancelButtonRef}
+          static
+          open={isOpen}
+          onClose={handleModalClose}
+        >
+          <div className="min-h-screen px-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0" />
+            </Transition.Child>
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Full Copyright Notice and Disclaimer
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    This project is developed as an educational exercise at WBS Coding School, Berlin. The purpose of this project is to apply and demonstrate skills learned in the program.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Pokémon and Pokémon character names are trademarks of Nintendo, The Pokémon Company, and Game Freak. This project is not affiliated with or endorsed by Nintendo or The Pokemon Company International. Any trademarks, service marks, product names, or named features are assumed to be the property of their respective owners and are used only for reference. No challenge to any intellectual property rights is intended or implied.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    This project is not intended for commercial use and has been created for educational purposes only. No revenue is generated through this project, nor is it intended to generate any revenue. The content utilized in this project is used in a fair-use context.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    This project uses data from the Pokémon API, images, and other Pokémon-related assets that are copyrighted.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Any redistribution or reproduction of part or all of the contents in any form is prohibited, other than the following:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-gray-500">
+                    <li>You may print or download to a local hard disk extracts for your personal and non-commercial use only.</li>
+                    <li>You may copy the content to individual third parties for their personal use, but only if you acknowledge the project as the source of the material.</li>
+                  </ul>
+                  <p className="text-sm text-gray-500">
+                    This project and any dispute arising out of it are subject to the laws of Berlin, Germany.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    For any questions or clarifications, please contact me at jr.a.schmalz@gmail.com
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                    onClick={handleModalClose}
+                    ref={cancelButtonRef}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 }
 
 export default HomePage;
-
-
-
-
